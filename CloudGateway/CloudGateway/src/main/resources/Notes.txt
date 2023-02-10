@@ -1,0 +1,57 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    #spring application name
+    name: API-GATEWAY
+  #configuration for config server so that it can use it
+  config:
+    import: configserver:http://localhost:9296
+
+    #Actual configuration for Api gateway
+    #All traffic coming to Api gateway and from Api gateway it can understand to which particular service we need to send the traffic  to
+
+    #Cloud config
+    cloud:
+      gateway:
+        #All the traffic that comes to this Api gateway traverses to the appropriate services
+        #We have 3 different apps...for each and every services we will create different ids and map the routes to it
+        routes:
+          - id : ORDER-SERVICE
+            #uri is load balance go to the order service
+            #name of the service defined
+            uri: lb://ORDER-SERVICE
+            predicates:
+              #defined path
+              #in order service we have one controller with one path and that is /order...if we have multiple then we have to specify multiple
+              ##everything that comes with path should be routed with ORDER-SERVICE
+              - Path=/order/**
+            #this filter is a circuit breaker filter
+            filters:
+              #There could be multiple filters as well
+              - name: CircuitBreaker
+                args:
+                  name: ORDER-SERVICE
+                  #when circuit breaker is being called and circuit is open...which particular fallback uri we should send data to
+                  #For this define one of the api as well
+                  #When we are not able to call the ORDER-SERVICE it should go back to that particular fallback uri
+                  fallbackuri: forward:/paymentServiceFallBack
+          - id: PAYMENT-SERVICE
+            uri: lb://PAYMENT-SERVICE
+            predicates:
+              - Path=/payment/**
+            filters:
+              - name: CircuitBreaker
+                args:
+                  name: PAYMENT-SERVICE
+                  fallbackuri: forward:/paymentServiceFallBack
+          - id: PRODUCT-SERVICE
+            uri: lb://PRODUCT-SERVICE
+            predicates:
+              - Path=/product/**
+            filters:
+              - name: CircuitBreaker
+                args:
+                  name: PRODUCT-SERVICE
+                  fallbackuri: forward:/productServiceFallBack
