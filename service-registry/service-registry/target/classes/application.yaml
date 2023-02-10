@@ -1,0 +1,15 @@
+#ideally by default it runs on 8761
+server:
+  port: 8761
+
+#configuration for eureka server
+#This configuration will tell this is a server and other clients can come and connect to it.
+eureka:
+  instance:
+    #by default running on localhost
+    hostname: localhost
+  client:
+    #we do not want this server itself to connect with itself because this is a server
+    register-with-eureka: false
+    #We do not want it to fetch the registory
+    fetch-registry: false
