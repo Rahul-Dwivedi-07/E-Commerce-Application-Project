@@ -1,0 +1,25 @@
+#add configuration to connect to database
+
+#will work on port 8081 using tomcat
+server:
+  port: 8081
+
+spring:
+  datasource:
+    #it will check if DB_HOST env variable is available then it will use that env variable otherwise will use localhost
+    #if we just write localhost then also it will work
+    url: jdbc:mysql://${DB_HOST:localhost}:3306/paymentdb
+    username: root
+    password: Laarroad#56
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL57InnoDBDialect
+    hibernate:
+      ddl-auto: update
+  #Name of the application
+  application:
+    name: PAYMENT-SERVICE
+  config:
+    #import configuration
+    import: configserver:http://localhost:9296
+
