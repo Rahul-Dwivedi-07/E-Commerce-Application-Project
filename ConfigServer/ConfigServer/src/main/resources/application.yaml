@@ -1,0 +1,30 @@
+server:
+  port: 9296
+
+spring:
+  application:
+    #name of the application
+    name: CONFIG-SERVER
+  #cloud configurations
+  cloud:
+    config:
+      server:
+        git:
+          #we want the configuration from the below uri
+          uri: https://github.com/Rahul-Dwivedi-07/spring-app-config
+          #whenever the app would start it would clone it
+          clone-on-start: true
+
+#configuration needed for config server to connect to the service registory/discovery
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    #with server we have made this as false but with client we will make this as true
+    register-with-eureka: true
+    service-url:
+      #where it should go and connect to
+      #When environment variable is available, we will use EUREKA_SERVER_ADDRESS otherwise when env variable is not available it will use the url(http://localhost:8761/eureka)
+      #client app will go and connect to this particular service url
+      defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
