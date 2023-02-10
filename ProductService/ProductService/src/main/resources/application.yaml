@@ -1,0 +1,41 @@
+#add configuration to connect to database
+
+#will work on port 8080 using tomcat
+server:
+  port: 8080
+
+spring:
+  datasource:
+    #it will check if DB_HOST env variable is available then it will use that env variable otherwise will use localhost
+    #if we just write localhost then also it will work
+    url: jdbc:mysql://${DB_HOST:localhost}:3306/productdb
+    username: root
+    password: Laarroad#56
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL57InnoDBDialect
+    hibernate:
+      ddl-auto: update
+  #Name of the application
+  application:
+    name: PRODUCT-SERVICE
+  config:
+    import: configserver:http://localhost:9296
+
+#import configuration
+#update is for if changes in entities, it will reflect in the database
+
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    fetch-registry: true
+#    #with server we have made this as false but with client we will make this as true
+#    register-with-eureka: true
+#    service-url:
+#      #where it should go and connect to
+#      #When environment variable is available, we will use EUREKA_SERVER_ADDRESS otherwise when env variable is not available it will use the url(http://localhost:8761/eureka)
+#      #client app will go and connect to this particular service url
+#      defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
+
+
