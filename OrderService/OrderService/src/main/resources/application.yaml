@@ -1,0 +1,70 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:3306/orderdb
+    username: root
+    password: Laarroad#56
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL57InnoDBDialect
+    hibernate:
+      ddl-auto: update
+  application:
+    name: ORDER-SERVICE
+  config:
+    #import configuration
+    import: configserver:http://localhost:9296
+#  security:
+#    oauth2:
+#      resourceserver:
+#        jwt:
+#          issuer-uri: https://dev-40513340.okta.com/oauth2/default
+#      client:
+#        registration:
+#          internal-client:
+#            provider: okta
+#            authorization-grant-type: client_credentials
+#            scope: internal
+#            client-id: 0oa88xbsg0jh42EZL5d7
+#            client-secret: 2FnXIM-OtWxSaD3vZ6rAAemNw3BYHCeQxDY-MlBT
+#        provider:
+#          okta:
+#            issuer-uri: https://dev-40513340.okta.com/oauth2/default
+
+#this will behave as a client because from this we will call other services like Product Services, Payment Services etc
+#we are registering this as a client and giving it all the permissions to access the further services.
+#internal-client because it is a internal request.
+#provider for this client is Okta
+
+#resiliance4j circuitbreaker
+#instances is external because we added the external
+#failure-rate-threshold: 50 percent
+#count based window and size is 10...and from that 10 size it will try to calculate what is happening for that circuit breaker
+resilience4j:
+  circuitbreaker:
+    instances:
+      external:
+        event-consumer-buffer-size: 10
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 5s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-size: 10
+        sliding-window-type: COUNT_BASED
+
+#ORDER-SERVICE will go and connect to the service registory
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    fetch-registry: true
+#    #with server we have made this as false but with client we will make this as true
+#    register-with-eureka: true
+#    service-url:
+#      #where it should go and connect to
+#      #When environment variable is available, we will use EUREKA_SERVER_ADDRESS otherwise when env variable is not available it will use the url(http://localhost:8761/eureka)
+#      #client app will go and connect to this particular service url
+#      defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
