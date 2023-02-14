@@ -1,0 +1,171 @@
+52)
+
+Rest Template is an api client through which we can call another api
+Feign client to call different apis
+Rest Template to call different apis
+Feign client is a rest client which allows us a java developer to use the api calls usign the declerative function
+
+Call Prodcut service from order service to reduce the quantity
+
+/product is service name
+
+PRODUCT SERVICE we have defined in the Eureka Server
+PRODUCT SERVICE will be referred to as PRODUCT SERVICE in Eureka client
+hence we can call http://PRODUCT-SERVICE/product/1 as well - need not worry about port number or ip address on which my app is running
+
+Rest Template - pass url as api and tell which type of code it is
+Rest Template call based on ip address
+
+We can also create an interface out of it - a declerative approach
+declare apis within application
+Product Service as a Feign Client in Order Service
+
+53)
+
+Open Feign functionality all our apis in declerative format
+
+In microservices architecture there are some files which are redundant, ideally we can create another service that will contain all the common classes
+and import that as a library in our project whenever and where ever required.
+
+External Package - external packages and files not part of order service but using it to make sure our application works correctly
+
+Creating a PRODUCT SERVICE client to call the PRODUCT SERVICE in .cleint package
+
+54)
+
+ObjectMapper provides functionality for reading and writing JSON, 
+either to and from basic POJOs (Plain Old Java Objects), 
+or to and from a general-purpose JSON Tree Model ( JsonNode ), as well as related functionality for performing conversions.
+
+Errors being thrown needs to be handled by one of the Controller Advice we create and using that advice whatever the errors that come through needs to returned back to the client.
+
+55)
+
+Whenever there is an exception in PlaceOrder, PlaceOrder will call the productService and there is an error in Product Service,
+ProdcutService will throw back the error, our Feign Client Decoder will handle that error and throw that error back,
+that error will be handled by Controller Advice created in Exception in Order Service, hence we will get a proper error message that what happened in our Api call.
+
+This way we can handle all the exception handling within the Client Service and Calling Service as well.
+
+58)
+
+We are assuming that it is going to be a 3rd party payment and for simplicity we are creating a Payment Service and call that particular Api from Payment Service to just mimic the 3rd party payment
+but ideally we would be integrating 3rd party payment apis or 3rd party payment gateways to do the payment.
+
+Web dependecy beacuse it is a spring Web Project
+
+Eureka client dependecy to connect my services to the Eureka Server
+
+Config client dependecy to connect to the config server
+
+repositiry package to create the repositories
+
+59)
+
+Feign client for this Payment Service and amke call from order service when we are doing PlaceOrder Api.
+
+60)
+
+Services get attached to discovery client or discovery server
+
+There should be an Api where if there is some issue in payment then quantity should be added back as well
+
+61)
+
+Info regarding the product that is being placed and also Payment info - Info about Product and Info based on the Product Id
+
+62)
+
+Getting ProductDetails from a Rest Template we need to have object of Rest Template as well
+-->Define Rest Template Object
+-->We can call the ProductDetails Api or ProductService Api to get a Product based on that Rest Template
+
+63)
+
+Implement Api which would get back the info from the payment and implement it in the order Service.
+
+Payment Api created in Payment Controller we can call from the Order Service to get the Payment Information.
+
+If multiple services are there we will get Load Balance data.
+
+Different Api calls using Rest Tenplate as well.
+
+64)
+
+calling different services based on their information and port information.
+
+Requests should be protected from Public Network to Private Newtork.
+
+Single POC where all those services would interact to and after that all those services would inteact to internal services.
+
+API Gateway single POC for all our internal services - act as gateway for all the requests coming from the client and internally if order service needs some info from Product Service, it will get because
+it is internal to our network and we can handle it internally.
+
+outside from Public Network.
+
+From Api Gateway all our traffic will be traversed.
+
+65)
+
+To create Api gateway we will use Spring Cloud Components - cloud gatway to implement this
+
+Spring Cloud BootStrap
+
+Api Gateway would be an reactive app that's why we need Spring Reactive Web.
+monitoring with other applications.
+
+Actual configuration for Api gateway.
+All traffic coming to Api gateway and from Api gateway it can understand to which particular service we need to send the traffic  to.
+
+66)
+
+Microservices architecture...so we would call one or more services from one of the services.
+
+Circuit breaker is a design pattern. lot of libraries allow us to do that.
+
+Circuit breaker works on the principle of differnet status. It will have differnet state and based on that differnet state, it will handle all the routes.
+
+67)
+
+Resiliance4j dependency for circuit breaker
+
+In the cloud gateway we implemented the circuit breaker for our different services.
+
+As we are using the reactor dependecny in our cloud gateway, the dependency that we shoudl add should also be reactor.
+
+Reactor dependency in reactor project.
+
+68)
+
+In this project not using reactor so add default dependency.
+
+After adding dependency go to Feign Clients because from order Service using Feign CLients to call the external services.
+
+Earlier default configuration with bean...here let's proceed with yaml file.
+
+69)
+
+Rate Limitor helps to avoid detox attack...we do not want our Apis to be vulunerable.
+
+Rate Limitor - how many requests are allowed per user per second
+
+Implement Rate Limitor using Resiliance4j and Redis.
+
+Using Resiliance4j and Redis we will handle rate limiting functionality for our Apis.
+
+expose redis port to host machine using command
+
+Add Redis reactor because we are using Reactor plugin.
+
+Add 2 configurations:
+--> one to add rate limitor for all the projects
+--> one to add for which particular key it should store the data
+
+The redis-rate-limiter.replenishRate is how many requests per second do you want a user to be allowed to do, without any dropped requests. 
+This is the rate that the token bucket is filled.
+
+The redis-rate-limiter.burstCapacity is the maximum number of requests a user is allowed to do in a single second. 
+This is the number of tokens the token bucket can hold. Setting this value to zero will block all requests.
+no of requests allowed in that particular one duration second.
+
+
