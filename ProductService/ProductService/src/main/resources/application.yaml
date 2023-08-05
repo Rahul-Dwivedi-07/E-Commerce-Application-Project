@@ -10,7 +10,7 @@ spring:
     #if we just write localhost then also it will work
     url: jdbc:mysql://${DB_HOST:localhost}:3306/productdb
     username: root
-    password: Laarroad#56
+    password: ********
     driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.MySQL57InnoDBDialect
